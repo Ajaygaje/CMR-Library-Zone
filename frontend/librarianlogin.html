@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMR Library - Librarian Login</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: url('libraryhomeimg.jpg') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 35px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c7ad6;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            background: #2c7ad6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #1f5bb5; }
+
+        button:disabled {
+            background: #999;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #2c7ad6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h1>CMR LIBRARY ZONE</h1>
+    <h2>Librarian Login</h2>
+
+    <form id="loginForm">
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter Email"
+            required
+        >
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter Password"
+            required
+        >
+
+        <button type="submit" id="loginButton">Login</button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="links">
+        <a href="index.html">Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+
+const API_URL = "http://localhost:8080";
+
+document.getElementById("loginForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const message = document.getElementById("message");
+    const button = document.getElementById("loginButton");
+
+    button.disabled = true;
+    button.textContent = "Logging in...";
+    message.textContent = "";
+
+    try {
+
+        const response = await fetch(API_URL + "/api/users/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Invalid login details.");
+        }
+
+        if (data.role !== "LIBRARIAN") {
+            throw new Error("Access denied. Use a Librarian account.");
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("email", email);
+
+        message.style.color = "green";
+        message.textContent = "Login successful!";
+
+        window.location.href = "librarian_panel.html";
+
+    } catch (error) {
+
+        message.style.color = "red";
+        message.textContent = error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "Login";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

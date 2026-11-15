@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - CMR Library Zone</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px 15px;
+            background: linear-gradient(rgba(0,30,65,.75), rgba(0,30,65,.75)),
+                        url("image.png") center/cover fixed;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #123c69;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 22px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1769aa;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            background: #123c69;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1769aa;
+        }
+
+        button:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #1769aa;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-box">
+
+    <h2>Student Registration</h2>
+    <p class="subtitle">Create your CMR Library Zone account</p>
+
+    <form id="registerForm">
+
+        <input type="text" id="name"
+               placeholder="Full Name" required>
+
+        <input type="email" id="email"
+               placeholder="Email Address" required>
+
+        <input type="password" id="password"
+               placeholder="Password (minimum 6 characters)"
+               minlength="6" required>
+
+        <input type="text" id="rollNumber"
+               placeholder="College Roll Number" required>
+
+        <select id="department" required>
+            <option value="">Select Department</option>
+            <option value="CSE">Computer Science (CSE)</option>
+            <option value="ECE">Electronics (ECE)</option>
+            <option value="EEE">Electrical (EEE)</option>
+            <option value="MECH">Mechanical</option>
+            <option value="CIVIL">Civil</option>
+            <option value="IT">Information Technology</option>
+            <option value="OTHER">Other</option>
+        </select>
+
+        <input type="tel" id="phone"
+               placeholder="10-digit Phone Number"
+               pattern="[0-9]{10}"
+               maxlength="10" required>
+
+        <button type="submit" id="registerButton">
+            Register
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="studentlogin.html">Login here</a>
+        <br><br>
+        <a href="index.html">Back to Home</a>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = "http://localhost:8080";
+
+    document.getElementById("registerForm")
+        .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const button = document.getElementById("registerButton");
+        const message = document.getElementById("message");
+
+        const studentData = {
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            password: document.getElementById("password").value,
+            rollNumber: document.getElementById("rollNumber").value.trim(),
+            department: document.getElementById("department").value,
+            phone: document.getElementById("phone").value.trim()
+        };
+
+        button.disabled = true;
+        button.textContent = "Registering...";
+        message.textContent = "";
+
+        try {
+            const response = await fetch(
+                API_URL + "/api/users/register",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(studentData)
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+
+            message.style.color = "green";
+            message.textContent =
+                "Registration successful! Redirecting to login...";
+
+            document.getElementById("registerForm").reset();
+
+            setTimeout(function() {
+                window.location.href = "studentlogin.html";
+            }, 1800);
+
+        } catch (error) {
+            message.style.color = "red";
+            message.textContent = error.message;
+        } finally {
+            button.disabled = false;
+            button.textContent = "Register";
+        }
+    });
+</script>
+
+</body>
+</html>

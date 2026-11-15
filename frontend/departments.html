@@ -1,0 +1,1367 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMR Library Zone - Student Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        #logo {
+            width: 30%;
+            min-width: 220px;
+            text-align: center;
+            font-size: 35px;
+            padding: 15px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            flex: 1;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        nav a:hover {
+            background: #575757;
+            border-radius: 5px;
+        }
+
+        section {
+            min-height: 100vh;
+            width: 100%;
+            background-image: url('image.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 20px;
+        }
+
+        .welcome {
+            background: rgba(255,255,255,0.92);
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 850px;
+        }
+
+        select, button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #2c7ad6;
+            color: white;
+        }
+
+        button:hover, select:hover {
+            background-color: #1f5bb5;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        #search-book-form,
+        #all-books-table,
+        #global-search-form,
+        .history-section {
+            display: none;
+            background: rgba(255,255,255,0.96);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-top: 20px;
+            width: 100%;
+            max-width: 1000px;
+            overflow-x: auto;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[readonly] {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #2c7ad6;
+            color: white;
+        }
+
+        td {
+            background: #f2f2f2;
+        }
+
+        tr:nth-child(even) td {
+            background: #e6f7ff;
+        }
+
+        tr:hover td {
+            background: #d0eaff;
+        }
+
+        #no-books-found,
+        #global-no-books-found {
+            display: none;
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        .section-title {
+            color: #2c7ad6;
+            text-align: center;
+        }
+
+        #profile-message {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Dashboard Summary Cards */
+
+        #student-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+
+        .summary-card i {
+            font-size: 28px;
+            color: #2c7ad6;
+        }
+
+        .summary-card h3 {
+            color: #444;
+            font-size: 16px;
+        }
+
+        .summary-card h2 {
+            color: #2c7ad6;
+            font-size: 28px;
+        }
+
+        .summary-card.overdue h2 {
+            color: #dc3545;
+        }
+
+        .summary-card.fine h2 {
+            color: #dc3545;
+        }
+
+        @media(max-width: 700px) {
+            #student-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 650px) {
+            header {
+                flex-direction: column;
+            }
+
+            #logo, nav {
+                width: 100%;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 6px;
+            }
+
+            select, button {
+                font-size: 13px;
+                padding: 9px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div id="logo">
+        LIBRARY<b style="color:#2c7ad6;">ZONE</b>
+    </div>
+
+    <nav>
+        <a href="index.html" class="fa fa-home"> Home</a>
+        <a href="gallery.html" class="fa fa-image"> Gallery</a>
+        <a href="about.html" class="fa fa-info-circle"> About</a>
+        <a href="#" id="logoutButton" class="fa fa-sign-out"> Logout</a>
+    </nav>
+</header>
+
+<section>
+
+    <div class="welcome">
+        <h2 class="section-title">STUDENT DASHBOARD</h2>
+        <p id="studentWelcome">Welcome to CMR Library Zone!</p>
+    </div>
+
+    <!-- Dashboard Summary Cards -->
+
+    <div id="student-summary">
+
+        <div class="summary-card">
+            <i class="fa fa-book"></i>
+            <h3>Currently Issued</h3>
+            <h2 id="total-issued">0</h2>
+        </div>
+
+        <div class="summary-card overdue">
+            <i class="fa fa-exclamation-triangle"></i>
+            <h3>Overdue Books</h3>
+            <h2 id="total-overdue">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <i class="fa fa-calendar"></i>
+            <h3>Due Soon</h3>
+            <h2 id="total-due-soon">0</h2>
+        </div>
+
+        <div class="summary-card fine">
+            <i class="fa fa-inr"></i>
+            <h3>Estimated Fine</h3>
+            <h2 id="total-fine">₹0</h2>
+        </div>
+
+    </div>
+
+    <!-- Main Dashboard Buttons -->
+
+    <div style="text-align:center; margin-top:20px;">
+
+        <select id="department-select">
+            <option value="">Select Department</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="IT">IT</option>
+            <option value="CSM">CSM</option>
+            <option value="CSD">CSD</option>
+            <option value="EEE">EEE</option>
+            <option value="AIML">AIML</option>
+        </select>
+
+        <button id="list-all-button">
+            <i class="fa fa-book"></i> List All Books
+        </button>
+
+        <button id="my-issued-button">
+            <i class="fa fa-bookmark"></i> My Issued Books
+        </button>
+
+        <button id="my-history-button">
+            <i class="fa fa-history"></i> My History
+        </button>
+
+        <button id="my-profile-button">
+            <i class="fa fa-user"></i> My Profile
+        </button>
+
+    </div>
+
+    <div id="message"></div>
+
+    <!-- Student Profile -->
+
+    <div id="profile-section" class="history-section">
+
+        <h2 class="section-title">My Profile</h2>
+
+        <label for="profile-name">Full Name</label>
+        <input type="text" id="profile-name" readonly>
+
+        <label for="profile-roll">Roll Number</label>
+        <input type="text" id="profile-roll" readonly>
+
+        <label for="profile-department">Department</label>
+        <input type="text" id="profile-department" readonly>
+
+        <label for="profile-email">Email</label>
+        <input type="email" id="profile-email" readonly>
+
+        <label for="profile-phone">Phone Number</label>
+        <input type="text" id="profile-phone" maxlength="20"
+               placeholder="Enter your phone number">
+
+        <div style="text-align:center;">
+            <button id="save-profile-button">
+                <i class="fa fa-save"></i> Save Changes
+            </button>
+        </div>
+
+        <p id="profile-message"></p>
+
+    </div>
+
+    <!-- Department Search -->
+
+    <div id="search-book-form">
+
+        <h2 class="section-title">Department Books</h2>
+
+        <input type="text"
+               id="search-input"
+               placeholder="Search books in selected department">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Department</th>
+                    <th>Available</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="search-results"></tbody>
+        </table>
+
+        <div id="no-books-found">Book not found</div>
+
+    </div>
+
+    <!-- Global Search -->
+
+    <div id="global-search-form">
+
+        <h2 class="section-title">Search All Books</h2>
+
+        <input type="text"
+               id="global-search-input"
+               placeholder="Search by book name or author">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Department</th>
+                    <th>Available</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="global-search-results"></tbody>
+        </table>
+
+        <div id="global-no-books-found">Book not found</div>
+
+    </div>
+
+    <!-- All Books -->
+
+    <div id="all-books-table">
+
+        <h2 class="section-title">All Available Books</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Department</th>
+                    <th>Available Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="all-books-results"></tbody>
+        </table>
+
+    </div>
+
+    <!-- My Issued Books -->
+
+    <div id="my-issued-section" class="history-section">
+
+        <h2 class="section-title">My Issued Books</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="my-issued-results"></tbody>
+        </table>
+
+    </div>
+
+    <!-- My Borrowing History -->
+
+    <div id="my-history-section" class="history-section">
+
+        <h2 class="section-title">My Borrowing History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Fine (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="my-history-results"></tbody>
+        </table>
+
+    </div>
+
+</section>
+
+<script>
+
+    // Backend URL
+    const API_URL = "http://localhost:8080";
+
+    // Fine per overdue day
+    const FINE_PER_DAY = 5;
+
+    // Books and student details
+    let allBooks = [];
+    let studentId = null;
+    let currentStudent = null;
+    let activeIssueRecords = [];
+
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    // Check student login
+    if (!token || role !== "STUDENT") {
+
+        alert("Please login using your student account.");
+        window.location.href = "studentlogin.html";
+
+    }
+
+    // Common API request function
+    async function apiRequest(url, options = {}) {
+
+        const response = await fetch(API_URL + url, {
+            ...options,
+
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+
+        let data;
+
+        try {
+            data = text ? JSON.parse(text) : null;
+        } catch {
+            data = text;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                typeof data === "string"
+                    ? data
+                    : data?.message || "Request failed"
+            );
+        }
+
+        return data;
+    }
+
+    // Dashboard message
+    function showMessage(message, isError = false) {
+
+        const element = document.getElementById("message");
+
+        element.textContent = message;
+        element.style.color = isError ? "red" : "green";
+
+    }
+
+    // Profile message
+    function showProfileMessage(message, isError = false) {
+
+        const element = document.getElementById("profile-message");
+
+        element.textContent = message;
+        element.style.color = isError ? "red" : "green";
+
+    }
+
+    // Hide all content sections
+    function hideAllSections() {
+
+        document.getElementById("search-book-form").style.display = "none";
+        document.getElementById("global-search-form").style.display = "none";
+        document.getElementById("all-books-table").style.display = "none";
+        document.getElementById("my-issued-section").style.display = "none";
+        document.getElementById("my-history-section").style.display = "none";
+        document.getElementById("profile-section").style.display = "none";
+
+    }
+
+    // Convert date safely into local midnight
+    function parseDateOnly(dateValue) {
+
+        if (!dateValue) {
+            return null;
+        }
+
+        const parts = String(dateValue).substring(0, 10).split("-");
+
+        if (parts.length !== 3) {
+            return null;
+        }
+
+        const year = Number(parts[0]);
+        const month = Number(parts[1]);
+        const day = Number(parts[2]);
+
+        if (!year || !month || !day) {
+            return null;
+        }
+
+        const date = new Date(year, month - 1, day);
+
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day
+        ) {
+            return null;
+        }
+
+        return date;
+
+    }
+
+    // Calculate difference between two dates
+    function getDaysDifference(startDate, endDate) {
+
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        return Math.floor(
+            (endDate.getTime() - startDate.getTime()) / oneDay
+        );
+
+    }
+
+    // Update dashboard summary cards
+    function updateDashboardSummary(records) {
+
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+
+        let totalIssued = 0;
+        let totalOverdue = 0;
+        let totalDueSoon = 0;
+        let totalFine = 0;
+
+        records.forEach(record => {
+
+            const status = String(record.status || "").toUpperCase();
+
+            // Only count active issued records
+            if (
+                status === "RETURNED" ||
+                record.returnDate
+            ) {
+                return;
+            }
+
+            totalIssued++;
+
+            const dueDate = parseDateOnly(record.dueDate);
+
+            if (!dueDate) {
+                return;
+            }
+
+            const daysOverdue =
+                getDaysDifference(dueDate, today);
+
+            if (daysOverdue > 0) {
+
+                totalOverdue++;
+
+                totalFine += daysOverdue * FINE_PER_DAY;
+
+            } else {
+
+                const daysRemaining =
+                    getDaysDifference(today, dueDate);
+
+                if (daysRemaining >= 0 && daysRemaining <= 3) {
+                    totalDueSoon++;
+                }
+
+            }
+
+        });
+
+        document.getElementById("total-issued").textContent =
+            totalIssued;
+
+        document.getElementById("total-overdue").textContent =
+            totalOverdue;
+
+        document.getElementById("total-due-soon").textContent =
+            totalDueSoon;
+
+        document.getElementById("total-fine").textContent =
+            "₹" + totalFine.toFixed(2);
+
+    }
+
+    // Load student profile and dashboard
+    async function initializePage() {
+
+        try {
+
+            await loadStudentProfile();
+
+            await loadBooks();
+
+            await loadDashboardSummary();
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to initialize dashboard: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+    // Get student profile
+    async function loadStudentProfile() {
+
+        try {
+
+            currentStudent =
+                await apiRequest("/api/students/profile");
+
+            studentId = currentStudent.id;
+
+            document.getElementById("studentWelcome").textContent =
+                "Welcome, " + currentStudent.name + "!";
+
+            displayStudentProfile(currentStudent);
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load student profile: " + error.message,
+                true
+            );
+
+            throw error;
+
+        }
+
+    }
+
+    // Display student profile
+    function displayStudentProfile(student) {
+
+        document.getElementById("profile-name").value =
+            student.name || "";
+
+        document.getElementById("profile-roll").value =
+            student.rollNumber || "";
+
+        document.getElementById("profile-department").value =
+            student.department || "";
+
+        document.getElementById("profile-email").value =
+            student.email || "";
+
+        document.getElementById("profile-phone").value =
+            student.phone || "";
+
+    }
+
+    // Open profile
+    function openMyProfile() {
+
+        hideAllSections();
+
+        document.getElementById("profile-section").style.display =
+            "block";
+
+        showProfileMessage("");
+
+        if (currentStudent) {
+
+            displayStudentProfile(currentStudent);
+
+        } else {
+
+            loadStudentProfile();
+
+        }
+
+    }
+
+    // Save student phone number
+    async function saveStudentProfile() {
+
+        const phone =
+            document.getElementById("profile-phone").value.trim();
+
+        if (!phone) {
+
+            showProfileMessage(
+                "Please enter your phone number.",
+                true
+            );
+
+            return;
+
+        }
+
+        if (phone.length > 20) {
+
+            showProfileMessage(
+                "Phone number cannot exceed 20 characters.",
+                true
+            );
+
+            return;
+
+        }
+
+        const saveButton =
+            document.getElementById("save-profile-button");
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+
+        try {
+
+            const updatedStudent = await apiRequest(
+                "/api/students/profile",
+                {
+                    method: "PUT",
+
+                    body: JSON.stringify({
+                        phone: phone
+                    })
+                }
+            );
+
+            currentStudent = updatedStudent;
+
+            displayStudentProfile(currentStudent);
+
+            showProfileMessage(
+                "Profile phone number updated successfully!"
+            );
+
+        } catch (error) {
+
+            showProfileMessage(
+                "Unable to update profile: " + error.message,
+                true
+            );
+
+        } finally {
+
+            saveButton.disabled = false;
+
+            saveButton.innerHTML =
+                '<i class="fa fa-save"></i> Save Changes';
+
+        }
+
+    }
+
+    // Load books
+    async function loadBooks() {
+
+        try {
+
+            allBooks = await apiRequest("/api/books");
+
+            renderDepartmentBooks();
+            renderGlobalSearch();
+            renderAllBooks();
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load books: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+    // Load active issue records and calculate summary
+    async function loadDashboardSummary() {
+
+        try {
+
+            activeIssueRecords =
+                await apiRequest("/api/issues/my-active");
+
+            if (!Array.isArray(activeIssueRecords)) {
+                activeIssueRecords = [];
+            }
+
+            updateDashboardSummary(activeIssueRecords);
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load dashboard summary: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+    // Create book row
+    function createBookRow(book, showAction = true) {
+
+        const tr = document.createElement("tr");
+
+        const values = [
+            book.title,
+            book.author,
+            book.department,
+            book.availableQuantity
+        ];
+
+        values.forEach(value => {
+
+            const td = document.createElement("td");
+
+            td.textContent = value ?? "";
+
+            tr.appendChild(td);
+
+        });
+
+        if (showAction) {
+
+            const actionCell = document.createElement("td");
+
+            const borrowButton = document.createElement("button");
+
+            borrowButton.textContent = "Borrow";
+
+            borrowButton.disabled =
+                Number(book.availableQuantity) <= 0;
+
+            if (borrowButton.disabled) {
+                borrowButton.textContent = "Out of Stock";
+            }
+
+            borrowButton.addEventListener("click", () => {
+                borrowBook(book.id);
+            });
+
+            actionCell.appendChild(borrowButton);
+
+            tr.appendChild(actionCell);
+
+        }
+
+        return tr;
+
+    }
+
+    // Department book search
+    function renderDepartmentBooks() {
+
+        const department =
+            document.getElementById("department-select").value;
+
+        const query =
+            document.getElementById("search-input").value.toLowerCase();
+
+        const results =
+            document.getElementById("search-results");
+
+        results.innerHTML = "";
+
+        const filteredBooks = allBooks.filter(book =>
+
+            (book.department || "").toUpperCase() === department &&
+            (book.title || "").toLowerCase().includes(query)
+
+        );
+
+        document.getElementById("no-books-found").style.display =
+            filteredBooks.length === 0 ? "block" : "none";
+
+        filteredBooks.forEach(book => {
+
+            results.appendChild(createBookRow(book));
+
+        });
+
+    }
+
+    // Global book search
+    function renderGlobalSearch() {
+
+        const query =
+            document.getElementById("global-search-input").value.toLowerCase();
+
+        const results =
+            document.getElementById("global-search-results");
+
+        results.innerHTML = "";
+
+        const filteredBooks = allBooks.filter(book =>
+
+            (book.title || "").toLowerCase().includes(query) ||
+            (book.author || "").toLowerCase().includes(query)
+
+        );
+
+        document.getElementById("global-no-books-found").style.display =
+            filteredBooks.length === 0 ? "block" : "none";
+
+        filteredBooks.forEach(book => {
+
+            results.appendChild(createBookRow(book));
+
+        });
+
+    }
+
+    // List all books
+    function renderAllBooks() {
+
+        const results =
+            document.getElementById("all-books-results");
+
+        results.innerHTML = "";
+
+        if (allBooks.length === 0) {
+
+            const tr = document.createElement("tr");
+
+            const td = document.createElement("td");
+
+            td.colSpan = 4;
+
+            td.textContent = "No books available";
+
+            tr.appendChild(td);
+
+            results.appendChild(tr);
+
+            return;
+
+        }
+
+        allBooks.forEach(book => {
+
+            results.appendChild(createBookRow(book, false));
+
+        });
+
+    }
+
+    // Show selected department
+    function showSearchBookForm() {
+
+        const department =
+            document.getElementById("department-select").value;
+
+        hideAllSections();
+
+        if (department) {
+
+            document.getElementById("search-book-form").style.display =
+                "block";
+
+            renderDepartmentBooks();
+
+        } else {
+
+            document.getElementById("global-search-form").style.display =
+                "block";
+
+            renderGlobalSearch();
+
+        }
+
+    }
+
+    // Borrow book
+    async function borrowBook(bookId) {
+
+        if (!studentId) {
+
+            alert("Student profile not found.");
+
+            return;
+
+        }
+
+        if (!confirm("Do you want to borrow this book?")) {
+            return;
+        }
+
+        try {
+
+            await apiRequest("/api/issues/issue", {
+
+                method: "POST",
+
+                body: JSON.stringify({
+                    studentId: studentId,
+                    bookId: bookId
+                })
+
+            });
+
+            alert("Book borrowed successfully!");
+
+            await loadBooks();
+
+            await loadDashboardSummary();
+
+        } catch (error) {
+
+            alert(
+                "Unable to borrow book: " + error.message
+            );
+
+        }
+
+    }
+
+    // Load currently issued books
+    async function loadMyIssuedBooks() {
+
+        hideAllSections();
+
+        const section =
+            document.getElementById("my-issued-section");
+
+        const results =
+            document.getElementById("my-issued-results");
+
+        section.style.display = "block";
+
+        results.innerHTML = "";
+
+        try {
+
+            const records =
+                await apiRequest("/api/issues/my-active");
+
+            if (!records || records.length === 0) {
+
+                const row = document.createElement("tr");
+
+                const cell = document.createElement("td");
+
+                cell.colSpan = 4;
+
+                cell.textContent =
+                    "You have no currently issued books.";
+
+                row.appendChild(cell);
+
+                results.appendChild(row);
+
+                updateDashboardSummary([]);
+
+                return;
+
+            }
+
+            updateDashboardSummary(records);
+
+            records.forEach(record => {
+
+                const book = allBooks.find(item =>
+                    item.id === record.bookId
+                );
+
+                const row = document.createElement("tr");
+
+                const values = [
+                    book
+                        ? book.title
+                        : "Book ID: " + record.bookId,
+
+                    record.issueDate,
+                    record.dueDate,
+                    record.status
+                ];
+
+                values.forEach(value => {
+
+                    const cell = document.createElement("td");
+
+                    cell.textContent = value ?? "-";
+
+                    row.appendChild(cell);
+
+                });
+
+                results.appendChild(row);
+
+            });
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load issued books: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+    // Load borrowing history
+    async function loadMyHistory() {
+
+        hideAllSections();
+
+        const section =
+            document.getElementById("my-history-section");
+
+        const results =
+            document.getElementById("my-history-results");
+
+        section.style.display = "block";
+
+        results.innerHTML = "";
+
+        try {
+
+            const records =
+                await apiRequest("/api/issues/my-history");
+
+            if (!records || records.length === 0) {
+
+                const row = document.createElement("tr");
+
+                const cell = document.createElement("td");
+
+                cell.colSpan = 6;
+
+                cell.textContent = "No borrowing history found.";
+
+                row.appendChild(cell);
+
+                results.appendChild(row);
+
+                return;
+
+            }
+
+            records.forEach(record => {
+
+                const book = allBooks.find(item =>
+                    item.id === record.bookId
+                );
+
+                const row = document.createElement("tr");
+
+                const values = [
+
+                    book
+                        ? book.title
+                        : "Book ID: " + record.bookId,
+
+                    record.issueDate,
+                    record.dueDate,
+                    record.returnDate || "Not returned",
+                    record.status,
+                    "₹" + Number(record.fine || 0).toFixed(2)
+
+                ];
+
+                values.forEach(value => {
+
+                    const cell = document.createElement("td");
+
+                    cell.textContent = value ?? "-";
+
+                    row.appendChild(cell);
+
+                });
+
+                results.appendChild(row);
+
+            });
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load history: " + error.message,
+                true
+            );
+
+        }
+
+    }
+
+    // List all books button
+    document.getElementById("list-all-button")
+        .addEventListener("click", function() {
+
+            hideAllSections();
+
+            document.getElementById("all-books-table").style.display =
+                "block";
+
+            renderAllBooks();
+
+        });
+
+    // Department selection
+    document.getElementById("department-select")
+        .addEventListener("change", showSearchBookForm);
+
+    // Department search
+    document.getElementById("search-input")
+        .addEventListener("input", renderDepartmentBooks);
+
+    // Global search
+    document.getElementById("global-search-input")
+        .addEventListener("input", renderGlobalSearch);
+
+    // My Issued Books
+    document.getElementById("my-issued-button")
+        .addEventListener("click", loadMyIssuedBooks);
+
+    // My History
+    document.getElementById("my-history-button")
+        .addEventListener("click", loadMyHistory);
+
+    // My Profile
+    document.getElementById("my-profile-button")
+        .addEventListener("click", openMyProfile);
+
+    // Save Profile
+    document.getElementById("save-profile-button")
+        .addEventListener("click", saveStudentProfile);
+
+    // Logout
+    document.getElementById("logoutButton")
+        .addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("email");
+
+            window.location.href = "studentlogin.html";
+
+        });
+
+    // Start dashboard
+    if (token && role === "STUDENT") {
+        initializePage();
+    }
+
+</script>
+
+</body>
+</html>

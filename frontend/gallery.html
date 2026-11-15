@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CMR Library Zone - Gallery</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #2c7ad6;
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ffc107;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: #f5a623;
+        }
+
+        /* Heading */
+        .gallery-heading {
+            text-align: center;
+            padding: 45px 15px 25px;
+        }
+
+        .gallery-heading h1 {
+            color: #2c7ad6;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .gallery-heading p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Gallery */
+        .gallery-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            display: block;
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .gallery-item h3 {
+            text-align: center;
+            padding: 16px 10px;
+            color: #2c7ad6;
+            font-size: 18px;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 42px;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c7ad6;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-heading h1 {
+                font-size: 26px;
+            }
+
+            nav {
+                justify-content: center;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
+
+            .gallery-item img {
+                height: 230px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            CMR LIBRARY<span> ZONE</span>
+        </div>
+
+        <nav>
+        <a href="index.html" class="fa fa-home"> Home</a>
+        <a href="gallery.html" class="fa fa-image"> Gallery</a>
+        <a href="adminlogin.html" class="fa fa-user"> Admin Login</a>
+        <a href="librarianlogin.html" class="fa fa-book"> Librarian Login</a>
+        <a href="studentlogin.html" class="fa fa-graduation-cap"> Student Login</a>
+        <a href="about.html" class="fa fa-info-circle"> About</a>
+    </nav>
+    </header>
+
+    <!-- Gallery Heading -->
+    <section class="gallery-heading">
+        <h1>Our Library Gallery</h1>
+        <p>Explore the learning environment and facilities of CMR Library.</p>
+    </section>
+
+    <!-- Gallery Images -->
+    <main class="gallery-container">
+
+        <section class="gallery">
+
+            <div class="gallery-item">
+                <img
+                    src="libraryhomeimg.jpg"
+                    alt="CMR Library Interior"
+                    onclick="openImage(this)"
+                >
+                <h3>Library Interior</h3>
+            </div>
+
+            <div class="gallery-item">
+                <img
+                    src="image.png"
+                    alt="Library Bookshelves"
+                    onclick="openImage(this)"
+                >
+                <h3>Library Bookshelves</h3>
+            </div>
+
+            <div class="gallery-item">
+                <img
+                    src="libraryimg.avif"
+                    alt="Library Reading Area"
+                    onclick="openImage(this)"
+                >
+                <h3>Reading Area</h3>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Image Preview -->
+    <div class="lightbox" id="lightbox" onclick="closeImage()">
+
+        <span class="close">&times;</span>
+
+        <img id="lightbox-image" src="" alt="Library Image Preview">
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 CMR Library Zone. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+
+        function openImage(image) {
+
+            const lightbox = document.getElementById("lightbox");
+            const preview = document.getElementById("lightbox-image");
+
+            preview.src = image.src;
+            lightbox.style.display = "flex";
+        }
+
+        function closeImage() {
+
+            document.getElementById("lightbox").style.display = "none";
+        }
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "Escape") {
+                closeImage();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
